@@ -31,6 +31,7 @@ public class Car {
 
     private Integer mileage;
 
+    @Column(name = "vehicle_condition")
     private String condition;
 
     @Column(unique = true)
