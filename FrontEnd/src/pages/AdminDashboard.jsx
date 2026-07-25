@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
 import AddCarForm from './AddCarForm'
 import ManageImages from './ManageImages'
+import ManageRepairs from './ManageRepairs'
 
 function AdminDashboard() {
   const [cars, setCars] = useState([])
@@ -11,6 +12,7 @@ function AdminDashboard() {
   const [showAddForm, setShowAddForm] = useState(false)
   const navigate = useNavigate()
   const [manageImagesCar, setManageImagesCar] = useState(null)
+  const [manageRepairsCar, setManageRepairsCar] = useState(null)
 
   const username = sessionStorage.getItem('username')
 
@@ -137,6 +139,12 @@ function AdminDashboard() {
                       Images
                     </button>
                     <button
+                      onClick={() => setManageRepairsCar(car)}
+                      className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600"
+                    >
+                      Repairs
+                    </button>
+                    <button
                       onClick={() => handleDelete(car.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                     >
@@ -154,6 +162,12 @@ function AdminDashboard() {
         <AddCarForm
           onClose={() => setShowAddForm(false)}
           onCarAdded={fetchCars}
+        />
+      )}
+      {manageRepairsCar && (
+        <ManageRepairs
+          car={manageRepairsCar}
+          onClose={() => setManageRepairsCar(null)}
         />
       )}
       {manageImagesCar && (

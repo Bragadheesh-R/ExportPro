@@ -12,6 +12,7 @@ function CarDetail() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [repairs, setRepairs] = useState([])
 
   useEffect(() => {
     fetchCar()
@@ -24,6 +25,9 @@ function CarDetail() {
 
       const imagesResponse = await axiosInstance.get(`/api/public/cars/${id}/images`)
       setImages(imagesResponse.data)
+
+      const repairsResponse = await axiosInstance.get(`/api/public/cars/${id}/repairs`)
+      setRepairs(repairsResponse.data)
     } catch (err) {
       setError('Car not found or no longer available')
     }
@@ -111,9 +115,8 @@ function CarDetail() {
                     <button
                       key={index}
                       onClick={() => setCurrentImage(index)}
-                      className={`w-2 h-2 rounded-full ${
-                        index === currentImage ? 'bg-white' : 'bg-white/50'
-                      }`}
+                      className={`w-2 h-2 rounded-full ${index === currentImage ? 'bg-white' : 'bg-white/50'
+                        }`}
                     />
                   ))}
                 </div>
@@ -137,6 +140,21 @@ function CarDetail() {
           Ships from {car.shippingPort?.name}, {car.shippingPort?.country}
         </p>
         <p className="text-purple-600 font-bold text-2xl mb-6">₹{car.price}</p>
+        {repairs.length > 0 && (
+          <div className="border-t pt-4 mb-6">
+            <h2 className="font-semibold mb-2">Repair &amp; Inspection History</h2>
+            <div className="flex flex-col gap-2">
+              {repairs.map((r) => (
+                <div key={r.id} className="bg-gray-50 rounded p-3 text-sm">
+                  <p className="font-medium">{r.description}</p>
+                  <p className="text-gray-500">
+                    {r.repairDate} • ₹{r.cost} • by {r.performedBy}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleInquire} className="border-t pt-4">
           <h2 className="font-semibold mb-2">Interested in this car?</h2>
