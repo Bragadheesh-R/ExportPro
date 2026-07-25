@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -13,7 +13,7 @@ function Login() {
     setError('')
 
     try {
-      const response = await axios.post('https://redesigned-guide-5gq967j75x6q24qx5-8080.app.github.dev/api/auth/login', {
+      const response = await axiosInstance.post('/api/auth/login', {
         email,
         password,
       })
