@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
 import AddCarForm from './AddCarForm'
+import ManageImages from './ManageImages'
 
 function AdminDashboard() {
   const [cars, setCars] = useState([])
@@ -9,6 +10,7 @@ function AdminDashboard() {
   const [error, setError] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
   const navigate = useNavigate()
+  const [manageImagesCar, setManageImagesCar] = useState(null)
 
   const username = sessionStorage.getItem('username')
 
@@ -30,6 +32,15 @@ function AdminDashboard() {
   const handleMarkSold = async (id) => {
     try {
       await axiosInstance.put(`/api/admin/cars/${id}/mark-sold`)
+      fetchCars()
+    } catch (err) {
+      setError('Failed to update car status')
+    }
+  }
+
+  const handleMarkAvailable = async (id) => {
+    try {
+      await axiosInstance.put(`/api/admin/cars/${id}/mark-available`)
       fetchCars()
     } catch (err) {
       setError('Failed to update car status')
@@ -70,10 +81,10 @@ function AdminDashboard() {
             Logout
           </button>
           <button
-          onClick={() => navigate('/admin/inquiries')}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          > 
-          View Inquiries
+            onClick={() => navigate('/admin/inquiries')}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            View Inquiries
           </button>
         </div>
       </div>
@@ -104,14 +115,27 @@ function AdminDashboard() {
                   <td className="p-3">₹{car.price}</td>
                   <td className="p-3">{car.status}</td>
                   <td className="p-3 flex gap-2">
-                    {car.status === 'AVAILABLE' && (
+                    {car.status === 'AVAILABLE' ? (
                       <button
                         onClick={() => handleMarkSold(car.id)}
                         className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
                       >
                         Mark Sold
                       </button>
+                    ) : (
+                      <button
+                        onClick={() => handleMarkAvailable(car.id)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
+                      >
+                        Mark Available
+                      </button>
                     )}
+                    <button
+                      onClick={() => setManageImagesCar(car)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                    >
+                      Images
+                    </button>
                     <button
                       onClick={() => handleDelete(car.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
@@ -130,6 +154,12 @@ function AdminDashboard() {
         <AddCarForm
           onClose={() => setShowAddForm(false)}
           onCarAdded={fetchCars}
+        />
+      )}
+      {manageImagesCar && (
+        <ManageImages
+          car={manageImagesCar}
+          onClose={() => setManageImagesCar(null)}
         />
       )}
     </div>

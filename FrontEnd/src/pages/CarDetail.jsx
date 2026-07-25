@@ -6,6 +6,8 @@ function CarDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [car, setCar] = useState(null)
+  const [images, setImages] = useState([])
+  const [currentImage, setCurrentImage] = useState(0)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -19,9 +21,20 @@ function CarDetail() {
     try {
       const response = await axiosInstance.get(`/api/public/cars/${id}`)
       setCar(response.data)
+
+      const imagesResponse = await axiosInstance.get(`/api/public/cars/${id}/images`)
+      setImages(imagesResponse.data)
     } catch (err) {
       setError('Car not found or no longer available')
     }
+  }
+
+  const nextImage = () => {
+    setCurrentImage((prev) => (prev + 1) % images.length)
+  }
+
+  const prevImage = () => {
+    setCurrentImage((prev) => (prev - 1 + images.length) % images.length)
   }
 
   const handleInquire = async (e) => {
@@ -70,6 +83,49 @@ function CarDetail() {
       </button>
 
       <div className="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
+        {images.length > 0 ? (
+          <div className="relative mb-4">
+            <img
+              src={images[currentImage].imageUrl}
+              alt={`${car.make} ${car.model}`}
+              className="w-full h-72 object-cover rounded"
+            />
+
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 rounded-full hover:bg-black/70"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 rounded-full hover:bg-black/70"
+                >
+                  ›
+                </button>
+
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                  {images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImage(index)}
+                      className={`w-2 h-2 rounded-full ${
+                        index === currentImage ? 'bg-white' : 'bg-white/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="w-full h-72 bg-gray-200 rounded flex items-center justify-center text-gray-400 mb-4">
+            No images available
+          </div>
+        )}
+
         <h1 className="text-2xl font-bold mb-2">
           {car.make} {car.model}
         </h1>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
+import CarCard from '../components/CarCard'
 
 function CustomerShop() {
   const [cars, setCars] = useState([])
@@ -54,24 +55,7 @@ function CustomerShop() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {cars.map((car) => (
-            <div key={car.id} className="bg-white rounded-lg shadow p-4">
-              <h2 className="text-lg font-bold">
-                {car.make} {car.model}
-              </h2>
-              <p className="text-gray-600">{car.year} • {car.mileage} km</p>
-              <p className="text-gray-600">Condition: {car.condition}</p>
-              <p className="text-purple-600 font-bold text-xl mt-2">
-                ₹{car.price}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                Ships from {car.shippingPort?.name}, {car.shippingPort?.country}
-              </p>
-              <button
-              onClick={() => navigate(`/car/${car.id}`)}
-              className="mt-3 w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700">
-                View Details
-                </button>
-            </div>
+            <CarCard key={car.id} car={car} />
           ))}
         </div>
       )}

@@ -83,6 +83,14 @@ public class AdminCarController {
         return ResponseEntity.ok(carRepository.save(car));
     }
 
+    @PutMapping("/{id}/mark-available")
+    public ResponseEntity<?> markAvailable(@PathVariable Long id) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Car not found"));
+        car.setStatus(CarStatus.AVAILABLE);
+        return ResponseEntity.ok(carRepository.save(car));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCar(@PathVariable Long id) {
         carRepository.deleteById(id);
