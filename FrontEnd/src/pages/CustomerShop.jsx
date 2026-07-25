@@ -66,9 +66,11 @@ function CustomerShop() {
               <p className="text-sm text-gray-500 mt-1">
                 Ships from {car.shippingPort?.name}, {car.shippingPort?.country}
               </p>
-              <button className="mt-3 w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700">
+              <button
+              onClick={() => navigate(`/car/${car.id}`)}
+              className="mt-3 w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700">
                 View Details
-              </button>
+                </button>
             </div>
           ))}
         </div>
