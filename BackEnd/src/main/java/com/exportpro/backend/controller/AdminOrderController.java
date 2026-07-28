@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.exportpro.backend.dto.OrderResponse;
 
 @RestController
 @RequestMapping("/api/admin/orders")
@@ -21,8 +22,12 @@ public class AdminOrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return ResponseEntity.ok(orderRepository.findAll());
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
+        return ResponseEntity.ok(
+            orderRepository.findAll().stream()
+            .map(OrderResponse::new)
+            .toList()
+        );
     }
 
     @PutMapping("/{id}/confirm-payment")
