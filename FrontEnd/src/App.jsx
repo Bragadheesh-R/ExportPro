@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Signup from './pages/Signup'
 import CarDetail from './pages/CarDetail'
 import AdminInquiries from './pages/AdminInquiries'
+import AdminOrders from './pages/AdminOrder'
 
 function App() {
   return (
@@ -34,6 +35,14 @@ function App() {
         element={
         <ProtectedRoute allowedRole="CUSTOMER">
           <CarDetail />
+          </ProtectedRoute>
+        }
+        />
+        <Route
+        path="/admin/orders"
+        element={
+        <ProtectedRoute allowedRole="ADMIN">
+          <AdminOrders />
           </ProtectedRoute>
         }
         />
