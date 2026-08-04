@@ -7,6 +7,7 @@ import Signup from './pages/Signup'
 import CarDetail from './pages/CarDetail'
 import AdminInquiries from './pages/AdminInquiries'
 import AdminOrders from './pages/AdminOrder'
+import MyOrders from './pages/MyOrders'
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-orders"
+            element={
+                <ProtectedRoute allowedRole="CUSTOMER">
+                      <MyOrders />
+                          </ProtectedRoute>
+                            }
+                            />
       </Routes>
     </BrowserRouter>
   )

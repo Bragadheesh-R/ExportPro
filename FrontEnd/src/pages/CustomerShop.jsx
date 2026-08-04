@@ -38,6 +38,12 @@ function CustomerShop() {
         <div className="flex items-center gap-4">
           <span className="text-gray-600">Welcome, {username}</span>
           <button
+            onClick={() => navigate('/my-orders')}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            My Orders
+          </button>
+          <button
             onClick={handleLogout}
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
