@@ -32,6 +32,23 @@ function AdminOrders() {
     }
   }
 
+  const handleDownloadInvoice = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/api/admin/orders/${id}/invoice`, {
+      responseType: 'blob',
+    })
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `invoice-${id}.pdf`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+  } catch (err) {
+    setError('Failed to download invoice')
+  }
+}
+
   const handleCancel = async (id) => {
     if (!window.confirm('Cancel this order? The car will become available again.')) return
     try {
@@ -115,6 +132,14 @@ function AdminOrders() {
                           Cancel
                         </button>
                       </>
+                    )}
+                    {order.status === 'COMPLETED' && (
+                      <button
+                        onClick={() => handleDownloadInvoice(order.id)}
+                        className="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700"
+                      >
+                        Download Invoice
+                      </button>
                     )}
                   </td>
                 </tr>
