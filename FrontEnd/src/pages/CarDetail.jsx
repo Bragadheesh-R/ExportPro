@@ -13,6 +13,8 @@ function CarDetail() {
   const [success, setSuccess] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [repairs, setRepairs] = useState([])
+  const [buying, setBuying] = useState(false)
+  const [buySuccess, setBuySuccess] = useState('')
 
   useEffect(() => {
     fetchCar()
@@ -39,6 +41,20 @@ function CarDetail() {
 
   const prevImage = () => {
     setCurrentImage((prev) => (prev - 1 + images.length) % images.length)
+  }
+  const handleBuyNow = async () => {
+    setError('')
+    setBuySuccess('')
+    setBuying(true)
+
+    try {
+      await axiosInstance.post(`/api/customer/orders/${id}/buy`)
+      setBuySuccess('Order placed! Our team will confirm payment and contact you shortly.')
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to place order. Please try again.')
+    } finally {
+      setBuying(false)
+    }
   }
 
   const handleInquire = async (e) => {
@@ -140,6 +156,15 @@ function CarDetail() {
           Ships from {car.shippingPort?.name}, {car.shippingPort?.country}
         </p>
         <p className="text-purple-600 font-bold text-2xl mb-6">₹{car.price}</p>
+        {buySuccess && <p className="text-green-600 mb-4">{buySuccess}</p>}
+
+        <button
+          onClick={handleBuyNow}
+          disabled={buying || !!buySuccess}
+          className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 mb-6"
+        >
+          {buying ? 'Placing order...' : buySuccess ? 'Order Placed' : 'Buy Now'}
+        </button>
         {repairs.length > 0 && (
           <div className="border-t pt-4 mb-6">
             <h2 className="font-semibold mb-2">Repair &amp; Inspection History</h2>
