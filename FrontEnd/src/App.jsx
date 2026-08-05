@@ -8,6 +8,7 @@ import CarDetail from './pages/CarDetail'
 import AdminInquiries from './pages/AdminInquiries'
 import AdminOrders from './pages/AdminOrder'
 import MyOrders from './pages/MyOrders'
+import AdminAnalytics from './pages/AdminAnalytics'
 
 function App() {
   return (
@@ -55,6 +56,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/admin/analytics"
+  element={
+    <ProtectedRoute allowedRole="ADMIN">
+      <AdminAnalytics />
+    </ProtectedRoute>
+  }
+/>
         <Route
           path="/my-orders"
             element={
