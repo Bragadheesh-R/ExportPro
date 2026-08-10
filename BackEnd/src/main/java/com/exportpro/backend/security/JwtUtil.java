@@ -1,22 +1,28 @@
 package com.exportpro.backend.security;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
 
-    // Secret key used to sign tokens - keep this safe, never expose it
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(
-        "ExportProSuperSecretKeyForJWTSigningMinimum256Bits".getBytes()
-    );
-
+    private final SecretKey secretKey;
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
 
-    // Create a token for a logged-in user
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
+        byte[] decodedKey = Base64.getDecoder().decode(secret);
+        this.secretKey = Keys.hmacShaKeyFor(decodedKey);
+    }
+
     public String generateToken(String email, String role) {
         return Jwts.builder()
                 .subject(email)
@@ -27,7 +33,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Extract email from a token
     public String extractEmail(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -37,7 +42,6 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    // Extract role from a token
     public String extractRole(String token) {
         return (String) Jwts.parser()
                 .verifyWith(secretKey)
@@ -47,7 +51,6 @@ public class JwtUtil {
                 .get("role");
     }
 
-    // Check if a token is valid (not expired, correctly signed)
     public boolean isTokenValid(String token) {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
