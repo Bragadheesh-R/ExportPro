@@ -17,8 +17,11 @@ function AdminNavbar() {
   return (
     <nav className="bg-white shadow sticky top-0 z-40">
       <div className="flex items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-1">
-          <span className="font-bold text-lg mr-4">ExportPro</span>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <img src="/exportpro-logo.gif" alt="ExportPro" className="w-10 h-10" />
+            <span className="font-bold text-lg">ExportPro</span>
+          </div>
           <NavLink to="/admin" end className={linkClass}>Dashboard</NavLink>
           <NavLink to="/admin/orders" className={linkClass}>Orders</NavLink>
           <NavLink to="/admin/inquiries" className={linkClass}>Inquiries</NavLink>
