@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axiosInstance from '../api/axiosInstance'
+import axiosInstance, { resolveImageUrl } from '../api/axiosInstance'
 
 function CarDetail() {
   const { id } = useParams()
@@ -105,11 +105,11 @@ function CarDetail() {
       <div className="bg-white rounded-lg shadow p-6 max-w-2xl mx-auto">
         {images.length > 0 ? (
           <div className="relative mb-4">
-            <img
-              src={images[currentImage].imageUrl}
-              alt={`${car.make} ${car.model}`}
-              className="w-full h-72 object-cover rounded"
-            />
+           <img
+             src={resolveImageUrl(images[currentImage].imageUrl)}
+               alt={`${car.make} ${car.model}`}
+                 className="w-full h-72 object-cover rounded"
+                 />
 
             {images.length > 1 && (
               <>

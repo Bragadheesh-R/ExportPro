@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axiosInstance from '../api/axiosInstance'
+//import axiosInstance from '../api/axiosInstance'
+import axiosInstance, { resolveImageUrl } from '../api/axiosInstance'
 
 function CarCard({ car }) {
   const [images, setImages] = useState([])
@@ -34,10 +35,10 @@ function CarCard({ car }) {
     <div className="bg-white rounded-lg shadow overflow-hidden">
       {images.length > 0 ? (
         <img
-          src={images[currentImage].imageUrl}
-          alt={`${car.make} ${car.model}`}
-          className="w-full h-40 object-cover"
-        />
+          src={resolveImageUrl(images[currentImage].imageUrl)}
+            alt={`${car.make} ${car.model}`}
+              className="w-full h-40 object-cover"
+              />
       ) : (
         <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-400">
           No image

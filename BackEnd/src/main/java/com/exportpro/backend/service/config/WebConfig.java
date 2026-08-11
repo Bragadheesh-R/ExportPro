@@ -1,4 +1,4 @@
-package com.exportpro.backend.config;
+package com.exportpro.backend.service.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
