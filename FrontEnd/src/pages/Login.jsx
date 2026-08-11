@@ -39,7 +39,10 @@ function Login() {
         onSubmit={handleLogin}
         className="bg-white p-8 rounded-lg shadow-md w-80"
       >
-        <h1 className="text-2xl font-bold mb-6 text-center">ExportPro Login</h1>
+        <div className="flex items-center gap-2 mb-6">
+  <img src="/exportpro-logo.gif" alt="ExportPro" className="w-10 h-10" />
+  <h1 className="text-2xl font-bold">ExportPro Login</h1>
+</div>
 
         {error && (
           <p className="text-red-500 text-sm mb-4 text-center">{error}</p>

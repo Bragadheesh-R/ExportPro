@@ -1,0 +1,41 @@
+import { NavLink, useNavigate } from 'react-router-dom'
+
+function AdminNavbar() {
+  const navigate = useNavigate()
+  const username = sessionStorage.getItem('username')
+
+  const handleLogout = () => {
+    sessionStorage.clear()
+    navigate('/')
+  }
+
+  const linkClass = ({ isActive }) =>
+    `px-3 py-2 rounded text-sm font-medium ${
+      isActive ? 'bg-purple-600 text-white' : 'text-gray-600 hover:bg-gray-200'
+    }`
+
+  return (
+    <nav className="bg-white shadow sticky top-0 z-40">
+      <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex items-center gap-1">
+          <span className="font-bold text-lg mr-4">ExportPro</span>
+          <NavLink to="/admin" end className={linkClass}>Dashboard</NavLink>
+          <NavLink to="/admin/orders" className={linkClass}>Orders</NavLink>
+          <NavLink to="/admin/inquiries" className={linkClass}>Inquiries</NavLink>
+          <NavLink to="/admin/analytics" className={linkClass}>Analytics</NavLink>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-gray-500 text-sm hidden sm:inline">Welcome, {username}</span>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+export default AdminNavbar
