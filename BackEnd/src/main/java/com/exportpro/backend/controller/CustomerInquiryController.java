@@ -1,15 +1,23 @@
 package com.exportpro.backend.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.exportpro.backend.dto.InquiryRequest;
+import com.exportpro.backend.dto.InquiryResponse;
 import com.exportpro.backend.model.Car;
 import com.exportpro.backend.model.Inquiry;
 import com.exportpro.backend.model.User;
 import com.exportpro.backend.repository.CarRepository;
 import com.exportpro.backend.repository.InquiryRepository;
 import com.exportpro.backend.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customer/inquiries")
@@ -42,5 +50,14 @@ public class CustomerInquiryController {
         inquiry.setMessage(request.getMessage());
 
         return ResponseEntity.ok(inquiryRepository.save(inquiry));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InquiryResponse>> getMyInquiries(Authentication authentication) {
+        return ResponseEntity.ok(
+            inquiryRepository.findByCustomerEmail(authentication.getName()).stream()
+                .map(InquiryResponse::new)
+                .toList()
+        );
     }
 }

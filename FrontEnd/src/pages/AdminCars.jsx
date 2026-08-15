@@ -5,6 +5,7 @@ import AddCarForm from './AddCarForm'
 import ManageImages from './ManageImages'
 import ManageRepairs from './ManageRepairs'
 import EditCarForm from './EditCarForm'
+import ManagePorts from './ManagePorts'
 
 function AdminCars() {
   const [cars, setCars] = useState([])
@@ -16,6 +17,7 @@ function AdminCars() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [editingCar, setEditingCar] = useState(null)
+  const [showManagePorts, setShowManagePorts] = useState(false)
 
   useEffect(() => {
     fetchCars()
@@ -93,6 +95,12 @@ function AdminCars() {
           >
             + Add Car
           </button>
+          <button
+            onClick={() => setShowManagePorts(true)}
+              className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
+              >
+                Manage Ports
+                </button>
         </div>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -216,6 +224,9 @@ function AdminCars() {
                       onCarUpdated={fetchCars}
                         />
       )}
+      {showManagePorts && (
+  <ManagePorts onClose={() => setShowManagePorts(false)} />
+)}
     </div>
   )
 }
