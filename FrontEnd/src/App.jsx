@@ -9,6 +9,7 @@ import CustomerShop from './pages/CustomerShop'
 import CarDetail from './pages/CarDetail'
 import MyOrders from './pages/MyOrders'
 import ProtectedRoute from './components/ProtectedRoute'
+import MyInquiries from './pages/MyInquiries'
 
 function App() {
   return (
@@ -25,6 +26,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-inquiries"
+            element={
+                <ProtectedRoute allowedRole="CUSTOMER">
+                      <MyInquiries />
+                          </ProtectedRoute>
+                            }
+                            />
         <Route
           path="/admin/cars"
           element={

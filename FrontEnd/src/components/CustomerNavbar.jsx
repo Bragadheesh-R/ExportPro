@@ -24,6 +24,7 @@ function CustomerNavbar() {
           </div>
           <NavLink to="/shop" className={linkClass}>Shop</NavLink>
           <NavLink to="/my-orders" className={linkClass}>My Orders</NavLink>
+          <NavLink to="/my-inquiries" className={linkClass}>My Inquiries</NavLink>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-gray-500 text-sm hidden sm:inline">Welcome, {username}</span>
