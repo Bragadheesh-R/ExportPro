@@ -23,9 +23,9 @@ function AdminNavbar() {
             <span className="font-bold text-lg">ExportPro</span>
           </div>
           <NavLink to="/admin" end className={linkClass}>Dashboard</NavLink>
+          <NavLink to="/admin/cars" className={linkClass}>Cars</NavLink>
           <NavLink to="/admin/orders" className={linkClass}>Orders</NavLink>
           <NavLink to="/admin/inquiries" className={linkClass}>Inquiries</NavLink>
-          <NavLink to="/admin/analytics" className={linkClass}>Analytics</NavLink>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-gray-500 text-sm hidden sm:inline">Welcome, {username}</span>

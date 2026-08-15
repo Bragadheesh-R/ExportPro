@@ -1,20 +1,30 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
 import AddCarForm from './AddCarForm'
-import ManageImages from './ManageImages'
-import ManageRepairs from './ManageRepairs'
 import AdminNavbar from '../components/AdminNavbar'
+import {
+  PieChart, Pie, Cell, Tooltip, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
+} from 'recharts'
+
+const STATUS_COLORS = {
+  RESERVED: '#eab308',
+  COMPLETED: '#22c55e',
+  CANCELLED: '#ef4444',
+}
 
 function AdminDashboard() {
   const [cars, setCars] = useState([])
+  const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
-  const [manageImagesCar, setManageImagesCar] = useState(null)
-  const [manageRepairsCar, setManageRepairsCar] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchCars()
+    fetchAnalytics()
   }, [])
 
   const fetchCars = async () => {
@@ -28,58 +38,99 @@ function AdminDashboard() {
     }
   }
 
-  const handleMarkSold = async (id) => {
+  const fetchAnalytics = async () => {
     try {
-      await axiosInstance.put(`/api/admin/cars/${id}/mark-sold`)
-      fetchCars()
+      const response = await axiosInstance.get('/api/admin/analytics')
+      setAnalytics(response.data)
     } catch (err) {
-      setError('Failed to update car status')
+      setError('Failed to load analytics')
     }
   }
 
-  const handleMarkAvailable = async (id, carLabel) => {
-    const confirmed = window.confirm(
-      `Warning: "${carLabel}" may already have a completed order tied to it.\n\n` +
-      `Marking it Available again allows it to be sold a second time, which can create ` +
-      `conflicting orders for the same physical car.\n\n` +
-      `Check the Orders page first if you're unsure. Continue anyway?`
-    )
-    if (!confirmed) return
-
-    try {
-      await axiosInstance.put(`/api/admin/cars/${id}/mark-available`)
-      fetchCars()
-    } catch (err) {
-      setError('Failed to update car status')
-    }
-  }
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this car permanently?')) return
-    try {
-      await axiosInstance.delete(`/api/admin/cars/${id}`)
-      fetchCars()
-    } catch (err) {
-      setError('Failed to delete car')
-    }
-  }
+  const previewCars = cars.slice(0, 8)
+  const pieData = analytics
+    ? Object.entries(analytics.ordersByStatus).map(([status, count]) => ({ name: status, value: count }))
+    : []
 
   return (
     <div className="min-h-screen bg-gray-100">
       <AdminNavbar />
 
       <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Cars</h1>
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-          >
-            + Add Car
-          </button>
-        </div>
-
         {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        {/* Analytics summary */}
+        {analytics && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div className="bg-white rounded-lg shadow p-4">
+                <p className="text-gray-500 text-sm">Total Revenue</p>
+                <p className="text-2xl font-bold text-purple-600">₹{analytics.totalRevenue}</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <p className="text-gray-500 text-sm">Total Orders</p>
+                <p className="text-2xl font-bold">{analytics.totalOrders}</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <p className="text-gray-500 text-sm">Total Cars Listed</p>
+                <p className="text-2xl font-bold">{analytics.totalCars}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+              <div className="bg-white rounded-lg shadow p-4">
+                <h2 className="font-semibold mb-4">Orders by Status</h2>
+                <ResponsiveContainer width="100%" height={240}>
+                  <PieChart>
+                    <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                      {pieData.map((entry) => (
+                        <Cell key={entry.name} fill={STATUS_COLORS[entry.name]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-4">
+                <h2 className="font-semibold mb-4">Sales Over Time</h2>
+                {analytics.salesOverTime.length === 0 ? (
+                  <p className="text-gray-400 text-sm">No completed sales yet.</p>
+                ) : (
+                  <ResponsiveContainer width="100%" height={240}>
+                    <BarChart data={analytics.salesOverTime}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="amount" fill="#9333ea" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Car preview */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Recent Cars</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            >
+              + Add Car
+            </button>
+            <button
+              onClick={() => navigate('/admin/cars')}
+              className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
+            >
+              View All Cars
+            </button>
+          </div>
+        </div>
 
         {loading ? (
           <p>Loading cars...</p>
@@ -93,69 +144,35 @@ function AdminDashboard() {
                   <th className="p-3">Year</th>
                   <th className="p-3">Price</th>
                   <th className="p-3">Status</th>
-                  <th className="p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {cars.map((car) => (
+                {previewCars.map((car) => (
                   <tr key={car.id} className="border-t">
                     <td className="p-3">{car.make}</td>
                     <td className="p-3">{car.model}</td>
                     <td className="p-3">{car.year}</td>
                     <td className="p-3">₹{car.price}</td>
                     <td className="p-3">{car.status}</td>
-                    <td className="p-3 flex gap-2">
-                      {car.status === 'AVAILABLE' ? (
-                        <button
-                          onClick={() => handleMarkSold(car.id)}
-                          className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-                        >
-                          Mark Sold
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleMarkAvailable(car.id, `${car.make} ${car.model}`)}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
-                        >
-                          Mark Available
-                        </button>
-                      )}
-                      <button
-                        onClick={() => setManageImagesCar(car)}
-                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-                      >
-                        Images
-                      </button>
-                      <button
-                        onClick={() => setManageRepairsCar(car)}
-                        className="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600"
-                      >
-                        Repairs
-                      </button>
-                      <button
-                        onClick={() => handleDelete(car.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-
-        {showAddForm && (
-          <AddCarForm onClose={() => setShowAddForm(false)} onCarAdded={fetchCars} />
-        )}
-        {manageRepairsCar && (
-          <ManageRepairs car={manageRepairsCar} onClose={() => setManageRepairsCar(null)} />
-        )}
-        {manageImagesCar && (
-          <ManageImages car={manageImagesCar} onClose={() => setManageImagesCar(null)} />
+        {cars.length > 8 && (
+          <p className="text-sm text-gray-500 mt-2">
+            Showing 8 of {cars.length} cars —{' '}
+            <button onClick={() => navigate('/admin/cars')} className="text-purple-600 hover:underline">
+              view all
+            </button>
+          </p>
         )}
       </div>
+
+      {showAddForm && (
+        <AddCarForm onClose={() => setShowAddForm(false)} onCarAdded={fetchCars} />
+      )}
     </div>
   )
 }

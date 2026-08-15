@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
-import AdminDashboard from './pages/AdminDashboard'
-import CustomerShop from './pages/CustomerShop'
-import ProtectedRoute from './components/ProtectedRoute'
 import Signup from './pages/Signup'
-import CarDetail from './pages/CarDetail'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminCars from './pages/AdminCars'
+import AdminOrders from './pages/AdminOrders'
 import AdminInquiries from './pages/AdminInquiries'
-import AdminOrders from './pages/AdminOrder'
+import CustomerShop from './pages/CustomerShop'
+import CarDetail from './pages/CarDetail'
 import MyOrders from './pages/MyOrders'
-import AdminAnalytics from './pages/AdminAnalytics'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
         <Route
           path="/admin"
           element={
@@ -25,29 +26,30 @@ function App() {
           }
         />
         <Route
-        path="/admin/inquiries"
-        element={
-        <ProtectedRoute allowedRole="ADMIN">
-          <AdminInquiries />
-          </ProtectedRoute>
-        }
+          path="/admin/cars"
+          element={
+            <ProtectedRoute allowedRole="ADMIN">
+              <AdminCars />
+            </ProtectedRoute>
+          }
         />
         <Route
-        path="/car/:id"
-        element={
-        <ProtectedRoute allowedRole="CUSTOMER">
-          <CarDetail />
-          </ProtectedRoute>
-        }
+          path="/admin/orders"
+          element={
+            <ProtectedRoute allowedRole="ADMIN">
+              <AdminOrders />
+            </ProtectedRoute>
+          }
         />
         <Route
-        path="/admin/orders"
-        element={
-        <ProtectedRoute allowedRole="ADMIN">
-          <AdminOrders />
-          </ProtectedRoute>
-        }
+          path="/admin/inquiries"
+          element={
+            <ProtectedRoute allowedRole="ADMIN">
+              <AdminInquiries />
+            </ProtectedRoute>
+          }
         />
+
         <Route
           path="/shop"
           element={
@@ -57,21 +59,21 @@ function App() {
           }
         />
         <Route
-  path="/admin/analytics"
-  element={
-    <ProtectedRoute allowedRole="ADMIN">
-      <AdminAnalytics />
-    </ProtectedRoute>
-  }
-/>
+          path="/car/:id"
+          element={
+            <ProtectedRoute allowedRole="CUSTOMER">
+              <CarDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/my-orders"
-            element={
-                <ProtectedRoute allowedRole="CUSTOMER">
-                      <MyOrders />
-                          </ProtectedRoute>
-                            }
-                            />
+          element={
+            <ProtectedRoute allowedRole="CUSTOMER">
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
