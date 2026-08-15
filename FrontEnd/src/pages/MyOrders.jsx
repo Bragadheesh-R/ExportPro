@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../api/axiosInstance'
+import CustomerNavbar from '../components/CustomerNavbar'
 
 function MyOrders() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const navigate = useNavigate()
 
   useEffect(() => {
     fetchOrders()
@@ -47,51 +46,47 @@ function MyOrders() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">My Orders</h1>
-        <button
-          onClick={() => navigate('/shop')}
-          className="text-purple-600 hover:underline"
-        >
-          ← Back to Shop
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-100">
+      <CustomerNavbar />
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6">My Orders</h1>
 
-      {loading ? (
-        <p>Loading your orders...</p>
-      ) : orders.length === 0 ? (
-        <p className="text-gray-500">You haven't placed any orders yet.</p>
-      ) : (
-        <div className="flex flex-col gap-4 max-w-2xl">
-          {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow p-4">
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="font-bold text-lg">
-                  {order.car.make} {order.car.model} ({order.car.year})
-                </h2>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${statusColor[order.status]}`}>
-                  {order.status}
-                </span>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        {loading ? (
+          <p>Loading your orders...</p>
+        ) : orders.length === 0 ? (
+          <p className="text-gray-500">You haven't placed any orders yet.</p>
+        ) : (
+          <div className="flex flex-col gap-4 max-w-2xl">
+            {orders.map((order) => (
+              <div key={order.id} className="bg-white rounded-lg shadow p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="font-bold text-lg">
+                    {order.car.make} {order.car.model} ({order.car.year})
+                  </h2>
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${statusColor[order.status]}`}>
+                    {order.status}
+                  </span>
+                </div>
+                <p className="text-gray-600">Price: ₹{order.priceAtPurchase}</p>
+                <p className="text-sm text-gray-500">
+                  Ordered: {new Date(order.createdAt).toLocaleString()}
+                </p>
+                {order.status === 'COMPLETED' && (
+                  <button
+                    onClick={() => handleDownloadInvoice(order.id)}
+                    className="mt-3 bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700"
+                  >
+                    Download Invoice
+                  </button>
+                )}
               </div>
-              <p className="text-gray-600">Price: ₹{order.priceAtPurchase}</p>
-              <p className="text-sm text-gray-500">
-                Ordered: {new Date(order.createdAt).toLocaleString()}
-              </p>
-              {order.status === 'COMPLETED' && (
-                <button
-                  onClick={() => handleDownloadInvoice(order.id)}
-                  className="mt-3 bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700"
-                >
-                  Download Invoice
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
