@@ -5,21 +5,25 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class InquiryResponse {
+public class AdminInquiryResponse {
     private Long id;
     private String carMake;
     private String carModel;
     private Integer carYear;
+    private String customerUsername;
+    private String customerEmail;
     private String message;
     private String reply;
     private LocalDateTime createdAt;
     private LocalDateTime repliedAt;
 
-    public InquiryResponse(Inquiry inquiry) {
+    public AdminInquiryResponse(Inquiry inquiry) {
         this.id = inquiry.getId();
         this.carMake = inquiry.getCar().getMake();
         this.carModel = inquiry.getCar().getModel();
         this.carYear = inquiry.getCar().getYear();
+        this.customerUsername = inquiry.getCustomer().getUsername();
+        this.customerEmail = inquiry.getCustomer().getEmail();
         this.message = inquiry.getMessage();
         this.reply = inquiry.getReply();
         this.createdAt = inquiry.getCreatedAt();

@@ -27,6 +27,10 @@ public class Inquiry {
 
     private String message;
 
+    private String reply;
+
+    private LocalDateTime repliedAt;
+
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 }

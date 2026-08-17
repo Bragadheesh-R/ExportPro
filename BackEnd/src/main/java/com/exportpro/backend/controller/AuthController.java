@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import com.exportpro.backend.dto.SignupRequest;
 import com.exportpro.backend.model.User;
 import com.exportpro.backend.repository.UserRepository;
 import com.exportpro.backend.security.JwtUtil;
+import com.exportpro.backend.service.LoginAttemptService;
 
 import jakarta.validation.Valid;
 
@@ -27,23 +29,23 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final LoginAttemptService loginAttemptService;
 
     public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+                           AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+                           LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Email already registered"));
-        }
-        if (userRepository.existsByUsername(request.getUsername())) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Username already taken"));
-        }
+public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
+    if (userRepository.existsByEmail(request.getEmail()) || userRepository.existsByUsername(request.getUsername())) {
+        return ResponseEntity.badRequest().body(Map.of("error", "Email or username already in use"));
+    }
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -52,17 +54,29 @@ public class AuthController {
         user.setRole(request.getRole());
 
         userRepository.save(user);
-
         return ResponseEntity.ok(Map.of("message", "Signup successful"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+        String email = request.getEmail();
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        if (loginAttemptService.isLockedOut(email)) {
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
+        }
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, request.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            loginAttemptService.recordFailure(email);
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
+        }
+
+        loginAttemptService.recordSuccess(email);
+
+        User user = userRepository.findByEmail(email).orElseThrow();
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
 
         return ResponseEntity.ok(Map.of(

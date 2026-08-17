@@ -28,8 +28,16 @@ function Signup() {
       })
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.error || 'Signup failed. Try a different email/username.')
-    } finally {
+  const data = err.response?.data
+  if (data?.error) {
+    setError(data.error)
+  } else if (data && typeof data === 'object') {
+    const firstMessage = Object.values(data)[0]
+    setError(firstMessage || 'Signup failed. Please check your details.')
+  } else {
+    setError('Signup failed. Please check your details.')
+  }
+} finally {
       setSubmitting(false)
     }
   }
