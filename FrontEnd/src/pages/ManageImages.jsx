@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import axiosInstance from '../api/axiosInstance'
+import axiosInstance, { resolveImageUrl } from '../api/axiosInstance'
 
-const BACKEND_ORIGIN =
-  'https://redesigned-guide-5gq967j75x6q24qx5-8080.app.github.dev'
 
 function ManageImages({ car, onClose }) {
   const [images, setImages] = useState([])
@@ -27,10 +25,6 @@ function ManageImages({ car, onClose }) {
     } catch (err) {
       setError('Failed to load images')
     }
-  }
-
-  const resolveUrl = (path) => {
-    return path.startsWith('http') ? path : `${BACKEND_ORIGIN}${path}`
   }
 
   const handleAddUrl = async (e) => {
@@ -141,7 +135,7 @@ function ManageImages({ car, onClose }) {
           {images.map((img) => (
             <div key={img.id} className="relative">
               <img
-                src={resolveUrl(img.imageUrl)}
+                src={resolveImageUrl(img.imageUrl)}
                 alt="Car"
                 className="w-full h-24 object-cover rounded border"
                 onError={(e) => {
