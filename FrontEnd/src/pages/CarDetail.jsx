@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axiosInstance from '../api/axiosInstance'
+import axiosInstance, { resolveImageUrl } from '../api/axiosInstance'
 import CustomerNavbar from '../components/CustomerNavbar'
 
 function CarDetail() {
@@ -101,7 +101,7 @@ function CarDetail() {
     <div className="min-h-screen bg-gray-100">
       <CustomerNavbar />
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <button
           onClick={() => navigate('/shop')}
           className="mb-4 text-purple-600 hover:underline"
@@ -113,10 +113,10 @@ function CarDetail() {
           {images.length > 0 ? (
             <div className="relative mb-4">
               <img
-                src={images[currentImage].imageUrl}
-                alt={`${car.make} ${car.model}`}
-                className="w-full h-72 object-cover rounded"
-              />
+                src={resolveImageUrl(images[currentImage].imageUrl)}
+                  alt={`${car.make} ${car.model}`}
+                    className="w-full h-72 object-cover rounded"
+                    />
               {images.length > 1 && (
                 <>
                   <button
@@ -151,7 +151,7 @@ function CarDetail() {
             </div>
           )}
 
-          <h1 className="text-2xl font-bold mb-2">
+          <h1 className="text-xl sm:text-2xl font-bold mb-2">
             {car.make} {car.model}
           </h1>
           <p className="text-gray-600 mb-1">Year: {car.year}</p>

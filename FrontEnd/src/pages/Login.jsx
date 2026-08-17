@@ -40,7 +40,7 @@ function Login() {
         className="bg-white p-8 rounded-lg shadow-md w-80"
       >
         <div className="flex items-center gap-2 mb-6">
-  <img src="/exportpro-logo.gif" alt="ExportPro" className="w-10 h-10" />
+  <img src="/logo.gif" alt="ExportPro" className="w-10 h-10" />
   <h1 className="text-2xl font-bold">ExportPro Login</h1>
 </div>
 

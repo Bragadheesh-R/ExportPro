@@ -26,8 +26,8 @@ function MyInquiries() {
     <div className="min-h-screen bg-gray-100">
       <CustomerNavbar />
 
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">My Inquiries</h1>
+      <div className="p-4 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-bold mb-6">My Inquiries</h1>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 

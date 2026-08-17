@@ -56,7 +56,7 @@ function AdminDashboard() {
     <div className="min-h-screen bg-gray-100">
       <AdminNavbar />
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {/* Analytics summary */}

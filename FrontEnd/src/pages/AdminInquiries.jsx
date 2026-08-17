@@ -49,8 +49,8 @@ function AdminInquiries() {
     <div className="min-h-screen bg-gray-100">
       <AdminNavbar />
 
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Customer Inquiries</h1>
+      <div className="p-4 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-bold mb-6">Customer Inquiries</h1>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
