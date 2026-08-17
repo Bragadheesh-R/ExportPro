@@ -1,29 +1,29 @@
 import axios from 'axios'
 
-export const BACKEND_ORIGIN =
-  'https://redesigned-guide-5gq967j75x6q24qx5-8080.app.github.dev'
+const getBackendBaseUrl = () => {
+  const { origin } = window.location
 
-export const resolveImageUrl = (path) => {
-  if (!path) return ''
-
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
+  if (origin.includes('.app.github.dev')) {
+    return origin.replace('-5173.', '-8080.')
   }
 
-  return `${BACKEND_ORIGIN}${path}`
+  return 'http://localhost:8080'
+}
+
+export const resolveImageUrl = (path) => {
+  if (!path) return path
+  return path.startsWith('http') ? path : `${getBackendBaseUrl()}${path}`
 }
 
 const axiosInstance = axios.create({
-  baseURL: BACKEND_ORIGIN,
+  baseURL: getBackendBaseUrl(),
 })
 
 axiosInstance.interceptors.request.use((config) => {
   const token = sessionStorage.getItem('token')
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
-
   return config
 })
 

@@ -23,14 +23,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
-private final JwtFilter jwtFilter;
-private final RateLimitFilter rateLimitFilter;
+    private final JwtFilter jwtFilter;
+    private final RateLimitFilter rateLimitFilter;
 
-public SecurityConfig(CustomUserDetailsService userDetailsService, JwtFilter jwtFilter, RateLimitFilter rateLimitFilter) {
-    this.userDetailsService = userDetailsService;
-    this.jwtFilter = jwtFilter;
-    this.rateLimitFilter = rateLimitFilter;
-}
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtFilter jwtFilter, RateLimitFilter rateLimitFilter) {
+        this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
+        this.rateLimitFilter = rateLimitFilter;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,7 +42,7 @@ public SecurityConfig(CustomUserDetailsService userDetailsService, JwtFilter jwt
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
-}
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -52,22 +52,22 @@ public SecurityConfig(CustomUserDetailsService userDetailsService, JwtFilter jwt
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
                 //.requestMatchers("/api/auth/**", "/api/public/**").permitAll()
                 .requestMatchers(
                         "/api/auth/**",
-                            "/api/public/**",
-                                "/uploads/**"
-                                ).permitAll()
+                        "/api/public/**",
+                        "/uploads/**"
+                ).permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
                 .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(rateLimitFilter, JwtFilter.class);
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, JwtFilter.class);
 
         return http.build();
     }
@@ -75,7 +75,10 @@ public SecurityConfig(CustomUserDetailsService userDetailsService, JwtFilter jwt
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://redesigned-guide-5gq967j75x6q24qx5-5173.app.github.dev/"));
+        configuration.setAllowedOriginPatterns(List.of(
+                "https://*-5173.app.github.dev",
+                "http://localhost:5173"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
