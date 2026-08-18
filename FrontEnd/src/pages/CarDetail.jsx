@@ -103,7 +103,7 @@ function CarDetail() {
 
       <div className="p-4 sm:p-6">
         <button
-          onClick={() => navigate('/shop')}
+          onClick={() => navigate('/')}
           className="mb-4 text-purple-600 hover:underline"
         >
           ← Back to Shop
@@ -114,9 +114,9 @@ function CarDetail() {
             <div className="relative mb-4">
               <img
                 src={resolveImageUrl(images[currentImage].imageUrl)}
-                  alt={`${car.make} ${car.model}`}
-                    className="w-full h-72 object-cover rounded"
-                    />
+                alt={`${car.make} ${car.model}`}
+                className="w-full h-72 object-cover rounded"
+              />
               {images.length > 1 && (
                 <>
                   <button
@@ -136,9 +136,8 @@ function CarDetail() {
                       <button
                         key={index}
                         onClick={() => setCurrentImage(index)}
-                        className={`w-2 h-2 rounded-full ${
-                          index === currentImage ? 'bg-white' : 'bg-white/50'
-                        }`}
+                        className={`w-2 h-2 rounded-full ${index === currentImage ? 'bg-white' : 'bg-white/50'
+                          }`}
                       />
                     ))}
                   </div>

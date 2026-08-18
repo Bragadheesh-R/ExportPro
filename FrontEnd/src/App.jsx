@@ -8,16 +8,20 @@ import AdminInquiries from './pages/AdminInquiries'
 import CustomerShop from './pages/CustomerShop'
 import CarDetail from './pages/CarDetail'
 import MyOrders from './pages/MyOrders'
-import ProtectedRoute from './components/ProtectedRoute'
 import MyInquiries from './pages/MyInquiries'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* Public routes - anyone can access, no login required */}
+        <Route path="/" element={<CustomerShop />} />
+        <Route path="/car/:id" element={<CarDetail />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
+        {/* Admin routes - protected */}
         <Route
           path="/admin"
           element={
@@ -26,14 +30,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/my-inquiries"
-            element={
-                <ProtectedRoute allowedRole="CUSTOMER">
-                      <MyInquiries />
-                          </ProtectedRoute>
-                            }
-                            />
         <Route
           path="/admin/cars"
           element={
@@ -59,27 +55,20 @@ function App() {
           }
         />
 
-        <Route
-          path="/shop"
-          element={
-            <ProtectedRoute allowedRole="CUSTOMER">
-              <CustomerShop />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/car/:id"
-          element={
-            <ProtectedRoute allowedRole="CUSTOMER">
-              <CarDetail />
-            </ProtectedRoute>
-          }
-        />
+        {/* Customer routes - protected (require actual login) */}
         <Route
           path="/my-orders"
           element={
             <ProtectedRoute allowedRole="CUSTOMER">
               <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-inquiries"
+          element={
+            <ProtectedRoute allowedRole="CUSTOMER">
+              <MyInquiries />
             </ProtectedRoute>
           }
         />

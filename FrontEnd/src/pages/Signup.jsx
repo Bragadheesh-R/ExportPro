@@ -26,18 +26,18 @@ function Signup() {
         ...form,
         role: 'CUSTOMER',
       })
-      navigate('/')
+      navigate('/login')
     } catch (err) {
-  const data = err.response?.data
-  if (data?.error) {
-    setError(data.error)
-  } else if (data && typeof data === 'object') {
-    const firstMessage = Object.values(data)[0]
-    setError(firstMessage || 'Signup failed. Please check your details.')
-  } else {
-    setError('Signup failed. Please check your details.')
-  }
-} finally {
+      const data = err.response?.data
+      if (data?.error) {
+        setError(data.error)
+      } else if (data && typeof data === 'object') {
+        const firstMessage = Object.values(data)[0]
+        setError(firstMessage || 'Signup failed. Please check your details.')
+      } else {
+        setError('Signup failed. Please check your details.')
+      }
+    } finally {
       setSubmitting(false)
     }
   }
@@ -93,7 +93,7 @@ function Signup() {
 
         <p className="text-sm text-gray-500 text-center mt-4">
           Already have an account?{' '}
-          <Link to="/" className="text-purple-600 hover:underline">
+          <Link to="/login" className="text-purple-600 hover:underline">
             Log in
           </Link>
         </p>
