@@ -32,8 +32,8 @@ public class AuthController {
     private final LoginAttemptService loginAttemptService;
 
     public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager, JwtUtil jwtUtil,
-                           LoginAttemptService loginAttemptService) {
+            AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+            LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -42,15 +42,18 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
-    if (userRepository.existsByEmail(request.getEmail()) || userRepository.existsByUsername(request.getUsername())) {
-        return ResponseEntity.badRequest().body(Map.of("error", "Email or username already in use"));
-    }
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
+        if (userRepository.existsByEmail(request.getEmail()) || userRepository.existsByUsername(request.getUsername())) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email or username already in use"));
+        }
 
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setCountry(request.getCountry());
+        user.setCity(request.getCity());
         user.setRole(request.getRole());
 
         userRepository.save(user);
