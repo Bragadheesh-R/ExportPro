@@ -10,6 +10,8 @@ import CarDetail from './pages/CarDetail'
 import MyOrders from './pages/MyOrders'
 import MyInquiries from './pages/MyInquiries'
 import ProtectedRoute from './components/ProtectedRoute'
+import ContentPage from './pages/ContentPage'
+import AdminContent from './pages/AdminContent'
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         {/* Public routes - anyone can access, no login required */}
         <Route path="/" element={<CustomerShop />} />
         <Route path="/car/:id" element={<CarDetail />} />
+        <Route path="/page/:pageKey" element={<ContentPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
@@ -54,6 +57,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/content"
+            element={
+                <ProtectedRoute allowedRole="ADMIN">
+                      <AdminContent />
+                          </ProtectedRoute>
+                            }
+                            />
 
         {/* Customer routes - protected (require actual login) */}
         <Route

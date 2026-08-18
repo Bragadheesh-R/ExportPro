@@ -33,8 +33,11 @@ function CustomerNavbar() {
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-1">
+          <NavLink to="/page/about" className={linkClass}>About</NavLink>
+          <NavLink to="/page/export-procedure" className={linkClass}>Export Process</NavLink>
           {isLoggedIn && (
             <>
+              <NavLink to="/" end className={linkClass}>Shop</NavLink>
               <NavLink to="/my-orders" className={linkClass}>My Orders</NavLink>
               <NavLink to="/my-inquiries" className={linkClass}>My Inquiries</NavLink>
             </>
@@ -93,6 +96,12 @@ function CustomerNavbar() {
       {/* Mobile dropdown panel */}
       {menuOpen && (
         <div className="md:hidden border-t px-4 py-3 flex flex-col gap-1">
+          <NavLink to="/page/about" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
+            About
+          </NavLink>
+          <NavLink to="/page/export-procedure" className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
+            Export Process
+          </NavLink>
           {isLoggedIn && (
             <>
               <NavLink to="/" end className={mobileLinkClass} onClick={() => setMenuOpen(false)}>
