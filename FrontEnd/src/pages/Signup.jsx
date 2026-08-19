@@ -7,6 +7,9 @@ function Signup() {
     username: '',
     email: '',
     password: '',
+    phoneNumber: '',
+    country: '',
+    city: '',
   })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -29,24 +32,22 @@ function Signup() {
       navigate('/login')
     } catch (err) {
       const data = err.response?.data
-      if (data?.error) {
-        setError(data.error)
-      } else if (data && typeof data === 'object') {
-        const firstMessage = Object.values(data)[0]
-        setError(firstMessage || 'Signup failed. Please check your details.')
-      } else {
-        setError('Signup failed. Please check your details.')
-      }
+      const message = typeof data === 'object' && data?.error
+        ? data.error
+        : typeof data === 'object'
+          ? Object.values(data)[0]
+          : 'Signup failed. Please check your details.'
+      setError(message)
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <form
         onSubmit={handleSignup}
-        className="bg-white p-8 rounded-lg shadow-md w-80"
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Create Account</h1>
 
@@ -59,7 +60,7 @@ function Signup() {
           placeholder="Username"
           value={form.username}
           onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
           required
         />
 
@@ -69,24 +70,53 @@ function Signup() {
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
           required
         />
 
         <input
           name="password"
           type="password"
-          placeholder="Password"
+          placeholder="Password (min 8 characters)"
           value={form.password}
           onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
           required
         />
+
+        <input
+          name="phoneNumber"
+          type="tel"
+          placeholder="Phone Number"
+          value={form.phoneNumber}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-3"
+          required
+        />
+
+        <div className="flex gap-2 mb-3">
+          <input
+            name="country"
+            placeholder="Country"
+            value={form.country}
+            onChange={handleChange}
+            className="w-1/2 border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <input
+            name="city"
+            placeholder="City"
+            value={form.city}
+            onChange={handleChange}
+            className="w-1/2 border border-gray-300 rounded px-3 py-2"
+            required
+          />
+        </div>
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 disabled:opacity-50 mt-2"
         >
           {submitting ? 'Creating account...' : 'Sign Up'}
         </button>
